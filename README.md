@@ -1,5 +1,16 @@
 # Device ID Widget
-* get device information
+* Gets device information
+
+# Features
+* Set the Device ID , device type and random device token
+* Executes the microflow with the device object. This widget also closes the current page so then when a back/close action is performed on the next page the app is closed
+* Show or close page upon device information retrievable.
+
+## Dependencies
+Mendix version 6.10 or up
+
+## Demo project
+http://deviceidwidget.mxapps.io
 
 ## Issues, suggestions and feature requests
 Please report issues at [https://github.com/mendixlabs/mobile-device/issues](https://github.com/mendixlabs/mobile-device/issues).

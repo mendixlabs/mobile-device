@@ -24,15 +24,8 @@ class DeviceIdWidget extends WidgetBase {
             }, this.domNode);
         } else {
             this.setUpWidgetDom();
-            let type = "";
-            let id = "";
-            if (window.device) {
-                type = window.device.platform;
-                id = window.device.uuid;
-            } else {
-                type = this.onGetDeviceInformationFallback;
-                id = "";
-            }
+            const type = window.device ? window.device.platform : this.onGetDeviceInformationFallback;
+            const id = window.device ? window.device.uuid : "";
 
             this.createDeviceObject((err: mendix.lib.MxError, object: mendix.lib.MxObject) => {
                 const token = Math.random().toString(36).substring(3);
@@ -42,13 +35,12 @@ class DeviceIdWidget extends WidgetBase {
                 object.set(this.tokenAttribute, token);
 
                 this.save(object, (error: mendix.lib.MxError, obj: mendix.lib.MxObject) => {
-                    window.localStorage.setItem("mx-authtoken", token + ":" + id);
+                    window.localStorage.setItem("mx-authtoken", `${token}:${id}`);
                     mx.ui.back();
                     this.executeMicroFlow(object);
                 });
             });
         }
-
 
         callback();
     }
@@ -99,17 +91,16 @@ class DeviceIdWidget extends WidgetBase {
     }
 
     private executeMicroFlow(mxObject: mendix.lib.MxObject) {
+        const context = new window.mendix.lib.MxContext();
+        context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (!mxObject || !mxObject.getGuid()) {
             return;
         }
-        const context = new window.mendix.lib.MxContext();
-        context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (this.onGetDeviceInformationOption === "callMicroflow" && this.onGetDeviceInformationMicroflow) {
+            const getError = (error: Error) => ` ${this.onGetDeviceInformationMicroflow}: ${error.message}`;
             window.mx.ui.action(this.onGetDeviceInformationMicroflow, {
                 context,
-                error: error =>
-                    window.mx.ui.error(`
-                            Error while executing microflow ${this.onGetDeviceInformationMicroflow}: ${error.message}`),
+                error: error => window.mx.ui.error(`Error while executing microflow ${getError(error)}`),
                 origin: this.mxform
             });
         } else if (this.onGetDeviceInformationMicroflow === "showPage" && this.onGetDeviceInformationPage) {
