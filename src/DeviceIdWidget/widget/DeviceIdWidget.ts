@@ -3,17 +3,13 @@ import * as domConstruct from "dojo/dom-construct";
 import * as WidgetBase from "mxui/widget/_WidgetBase";
 
 type OnGetDeviceInformationOptions = "doNothing" | "showPage" | "callMicroflow";
-type onGetDeviceInformationFallback = "Android" | "IOS" | "Web";
 
 class DeviceIdWidget extends WidgetBase {
-    private deviceEntity: string;
     private deviceIDAttribute: string;
     private deviceTypeAttribute: string;
     private onGetDeviceInformationMicroflow: string;
     private onGetDeviceInformationOption: OnGetDeviceInformationOptions;
-    private onGetDeviceInformationFallback: onGetDeviceInformationFallback;
     private onGetDeviceInformationPage?: string;
-    private tokenAttribute: string;
 
     update(mxObject: mendix.lib.MxObject, callback: () => void) {
         const warnings = this.validateProps();
@@ -23,22 +19,16 @@ class DeviceIdWidget extends WidgetBase {
                 innerHTML: warnings
             }, this.domNode);
         } else {
-            this.setUpWidgetDom();
-            const type = window.device ? window.device.platform : this.onGetDeviceInformationFallback;
+            const type = window.device ? window.device.platform : "Web";
             const id = window.device ? window.device.uuid : "";
 
-            this.createDeviceObject((err: mendix.lib.MxError, object: mendix.lib.MxObject) => {
-                const token = Math.random().toString(36).substring(3);
+            this.setUpWidgetDom();
+            mxObject.set(this.deviceIDAttribute, id);
+            mxObject.set(this.deviceTypeAttribute, type);
 
-                object.set(this.deviceIDAttribute, id);
-                object.set(this.deviceTypeAttribute, type);
-                object.set(this.tokenAttribute, token);
-
-                this.save(object, (error: mendix.lib.MxError, obj: mendix.lib.MxObject) => {
-                    window.localStorage.setItem("mx-authtoken", `${token}:${id}`);
-                    mx.ui.back();
-                    this.executeMicroFlow(object);
-                });
+            this.save(mxObject, (error, object) => {
+                mx.ui.back();
+                this.executeMicroFlow(mxObject);
             });
         }
 
@@ -63,28 +53,15 @@ class DeviceIdWidget extends WidgetBase {
         return errorMessage && `Error in device id widget configuration: ${errorMessage}`;
     }
 
-    private createDeviceObject(callback: (error: mendix.lib.MxError | null, object?: mendix.lib.MxObject) => void) {
-        window.mx.data.create({
-            callback: (obj) => {
-                callback(null, obj);
-            },
-            entity: this.deviceEntity,
-            error: (err) => {
-                window.mx.ui.error(`Error while creating device information: ${err.message}`),
-                callback(err);
-            }
-        });
-    }
-
     // tslint:disable-next-line:max-line-length
     private save(mxObject: mendix.lib.MxObject, callback: (error: mendix.lib.MxError | null, object?: mendix.lib.MxObject) => void) {
         window.mx.data.commit({
             callback: () => {
                 callback(null, mxObject);
             },
-            error: (err) => {
-                window.mx.ui.error(`Error while saving device information: ${err.message}`),
-                callback(err);
+            error: (error) => {
+                window.mx.ui.error(`Error while saving device information: ${error.message}`),
+                callback(error);
             },
             mxobj: mxObject
         });

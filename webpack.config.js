@@ -10,10 +10,10 @@ const widgetConfig = {
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: "src/DeviceIdWidget/widget/DeviceIdWidget.js",
-        libraryTarget: "umd"
+        libraryTarget: "amd"
     },
     resolve: {
-        extensions: [ ".ts", ".js" ],
+        extensions: [ ".ts" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }
@@ -24,16 +24,7 @@ const widgetConfig = {
         ]
     },
     devtool: "source-map",
-        externals: [
-        "react",
-        "react-dom",
-        "mxui/widget/_WidgetBase",
-        "dojo/_base/declare",
-        "dojo/dom-construct",
-        "dojo/dom",
-        "dojo/dom-class",
-        "dojo/dom-style"
-    ],
+    externals: [ "react", "react-dom", /^mxui\/|^mendix\/|^dojo\/|^dijit\// ],
     plugins: [
         new CleanWebpackPlugin("dist/tmp"),
         new CopyWebpackPlugin([
@@ -51,7 +42,7 @@ const previewConfig = {
         libraryTarget: "commonjs"
     },
     resolve: {
-        extensions: [ ".ts", ".js" ]
+        extensions: [ ".ts" ]
     },
     module: {
         rules: [
