@@ -1,6 +1,6 @@
 {
-  "name": "device-id-widget",
-  "widgetName": "DeviceIdWidget",
+  "name": "mobile-device",
+  "widgetName": "MobileDevice",
   "version": "1.0.0",
   "description": "Gets device information",
   "copyright": "Mendix BV",

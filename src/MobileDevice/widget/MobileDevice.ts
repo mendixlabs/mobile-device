@@ -4,7 +4,7 @@ import * as WidgetBase from "mxui/widget/_WidgetBase";
 
 type OnGetDeviceInformationOptions = "doNothing" | "showPage" | "callMicroflow";
 
-class DeviceIdWidget extends WidgetBase {
+class MobileDevice extends WidgetBase {
     private deviceIDAttribute: string;
     private deviceTypeAttribute: string;
     private onGetDeviceInformationMicroflow: string;
@@ -90,7 +90,7 @@ class DeviceIdWidget extends WidgetBase {
     }
 }
 // tslint:disable : only-arrow-functions
-dojoDeclare("DeviceIdWidget.widget.DeviceIdWidget", [ WidgetBase ], function(Source: any) {
+dojoDeclare("MobileDevice.widget.MobileDevice", [ WidgetBase ], function(Source: any) {
     const result: any = {};
     for (const property in Source.prototype) {
         if (property !== "constructor" && Source.prototype.hasOwnProperty(property)) {
@@ -98,4 +98,4 @@ dojoDeclare("DeviceIdWidget.widget.DeviceIdWidget", [ WidgetBase ], function(Sou
         }
     }
     return result;
-}(DeviceIdWidget));
+}(MobileDevice));

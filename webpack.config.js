@@ -5,11 +5,11 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const widgetConfig = {
     entry: {
-        DeviceIdWidget: "./src/DeviceIdWidget/widget/DeviceIdWidget.ts",
+        MobileDevice: "./src/MobileDevice/widget/MobileDevice.ts",
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/DeviceIdWidget/widget/DeviceIdWidget.js",
+        filename: "src/MobileDevice/widget/MobileDevice.js",
         libraryTarget: "amd"
     },
     resolve: {
@@ -35,10 +35,10 @@ const widgetConfig = {
 };
 
 const previewConfig = {
-    entry: "./src/DeviceIdWidget/widget/DeviceIdWidget.webmodeler.ts",
+    entry: "./src/MobileDevice/widget/MobileDevice.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/DeviceIdWidget/widget/DeviceIdWidget.webmodeler.js",
+        filename: "src/MobileDevice/widget/MobileDevice.webmodeler.js",
         libraryTarget: "commonjs"
     },
     resolve: {
