@@ -8,6 +8,11 @@
 
 ## Dependencies
 Mendix version 6.10 or up
+Add cordova-plugin-app-version to your phonegap app
+
+## How it Works
+The widget will save device information to a configured context object. The version and build
+information are only available when `cordova-plugin-app-version` is used.
 
 ## Demo project
 http://deviceidwidget.mxapps.io

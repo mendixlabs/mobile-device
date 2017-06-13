@@ -1,17 +1,22 @@
 import * as dojoDeclare from "dojo/_base/declare";
 import * as domConstruct from "dojo/dom-construct";
 import * as WidgetBase from "mxui/widget/_WidgetBase";
+import * as dojoLang from "dojo/_base/lang";
 
 type OnGetDeviceInformationOptions = "doNothing" | "showPage" | "callMicroflow";
 
 class MobileDevice extends WidgetBase {
     private deviceIDAttribute: string;
     private deviceTypeAttribute: string;
+    private appVersionVersionAttribute: string;
+    private appVersionBuildAttribute: string;
     private onGetDeviceInformationMicroflow: string;
     private onGetDeviceInformationOption: OnGetDeviceInformationOptions;
     private onGetDeviceInformationPage?: string;
+    private mxObject: mendix.lib.MxObject;
 
     update(mxObject: mendix.lib.MxObject, callback: () => void) {
+        this.mxObject = mxObject;
         const warnings = this.validateProps();
         if (warnings) {
             domConstruct.create("div", {
@@ -19,27 +24,48 @@ class MobileDevice extends WidgetBase {
                 innerHTML: warnings
             }, this.domNode);
         } else {
-            const type = window.device ? window.device.platform : "Web";
-            const id = window.device ? window.device.uuid : "";
-
             this.setUpWidgetDom();
-            mxObject.set(this.deviceIDAttribute, id);
-            mxObject.set(this.deviceTypeAttribute, type);
-
-            this.save(mxObject, (error, object) => {
-                mx.ui.back();
-                this.executeMicroFlow(mxObject);
-            });
+            this.connect(document, "deviceReady", dojoLang.hitch(this, this.onDeviceReady));
+            if (!window.device) {
+                mxObject.set(this.deviceIDAttribute, "");
+                mxObject.set(this.deviceTypeAttribute, "Web");
+                this.save(mxObject);
+            }
         }
 
         callback();
     }
 
+    uninitialize(): boolean {
+        window.removeEventListener("deviceReady", this.onDeviceReady);
+        return true;
+    }
+
     private setUpWidgetDom() {
         domConstruct.create("div", {
-            class: "device-id-widget",
-            id: "widget-device-id"
+            class: "mobile-device-widget",
+            id: "mobile-device"
         }, document.body, "first");
+    }
+
+    private onDeviceReady() {
+        if (cordova.getAppVersion !== undefined) {
+            cordova.getAppVersion.getVersionNumber((versionNumber: number) => {
+                if (versionNumber) {
+                    cordova.getAppVersion.getVersionCode((versionCode: string) => {
+                        if (versionCode) {
+                            this.mxObject.set(this.deviceIDAttribute, window.device.uuid);
+                            this.mxObject.set(this.deviceTypeAttribute, window.device.platform);
+                            this.mxObject.set(this.appVersionBuildAttribute, versionNumber);
+                            this.mxObject.set(this.appVersionVersionAttribute, versionCode);
+                            this.save(this.mxObject);
+                        }
+                    });
+                }
+            });
+        } else {
+            window.mx.ui.error("Add cordova-plugin-app-version to your project config");
+        }
     }
 
     private validateProps(): string {
@@ -53,15 +79,14 @@ class MobileDevice extends WidgetBase {
         return errorMessage && `Error in device id widget configuration: ${errorMessage}`;
     }
 
-    // tslint:disable-next-line:max-line-length
-    private save(mxObject: mendix.lib.MxObject, callback: (error: mendix.lib.MxError | null, object?: mendix.lib.MxObject) => void) {
+    private save(mxObject: mendix.lib.MxObject) {
         window.mx.data.commit({
             callback: () => {
-                callback(null, mxObject);
+                mx.ui.back();
+                this.executeMicroFlow(mxObject);
             },
             error: (error) => {
-                window.mx.ui.error(`Error while saving device information: ${error.message}`),
-                callback(error);
+                window.mx.ui.error(`Error while saving device information: ${error.message}`);
             },
             mxobj: mxObject
         });
