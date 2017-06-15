@@ -2,43 +2,68 @@ import * as dojoDeclare from "dojo/_base/declare";
 import * as domConstruct from "dojo/dom-construct";
 import * as WidgetBase from "mxui/widget/_WidgetBase";
 import * as dojoLang from "dojo/_base/lang";
+import * as dojoOn from "dojo/on";
 
-type OnGetDeviceInformationOptions = "doNothing" | "showPage" | "callMicroflow";
+type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow";
 
 class MobileDevice extends WidgetBase {
-    private deviceIDAttribute: string;
+    private deviceIdAttribute: string;
     private deviceTypeAttribute: string;
     private appVersionVersionAttribute: string;
     private appVersionBuildAttribute: string;
-    private onGetDeviceInformationMicroflow: string;
-    private onGetDeviceInformationOption: OnGetDeviceInformationOptions;
-    private onGetDeviceInformationPage?: string;
+    private microflow: string;
+    private onDeviceReadyAction: onDeviceReadyActions;
+    private page: string;
     private mxObject: mendix.lib.MxObject;
+    private onNavigateBack: boolean;
+    // internal variables
+    private deviceReadyEvent: any;
+
+    postCreate() {
+        this.showError(this.validateProps());
+        this.setUpWidgetDom();
+        this.setUpEvents();
+    }
 
     update(mxObject: mendix.lib.MxObject, callback: () => void) {
         this.mxObject = mxObject;
-        const warnings = this.validateProps();
-        if (warnings) {
-            domConstruct.create("div", {
-                class: "alert alert-danger",
-                innerHTML: warnings
-            }, this.domNode);
-        } else {
-            this.setUpWidgetDom();
-            this.connect(document, "deviceReady", dojoLang.hitch(this, this.onDeviceReady));
-            if (!window.device) {
-                mxObject.set(this.deviceIDAttribute, "");
-                mxObject.set(this.deviceTypeAttribute, "Web");
-                this.save(mxObject);
-            }
+        if (!window.device) {
+            mxObject.set(this.deviceIdAttribute, "");
+            mxObject.set(this.deviceTypeAttribute, "Web");
+            this.commit(mxObject);
         }
 
         callback();
     }
 
     uninitialize(): boolean {
-        window.removeEventListener("deviceReady", this.onDeviceReady);
+        this.removeEvents();
+
         return true;
+    }
+
+    private showError(message: string) {
+        if (message) {
+            domConstruct.create("div", {
+                class: "alert alert-danger",
+                innerHTML: message
+            }, this.domNode);
+        }
+    }
+
+    private setUpEvents() {
+        if (window.device) {
+            this.deviceReadyEvent = dojoOn(document, "deviceReady", dojoLang.hitch(this, this.onDeviceReady));
+        }
+    }
+
+    private removeEvents() {
+        if (window.device) {
+            if (this.deviceReadyEvent) {
+                this.deviceReadyEvent.remove();
+                this.deviceReadyEvent = null;
+            }
+        }
     }
 
     private setUpWidgetDom() {
@@ -50,15 +75,15 @@ class MobileDevice extends WidgetBase {
 
     private onDeviceReady() {
         if (cordova.getAppVersion !== undefined) {
-            cordova.getAppVersion.getVersionNumber((versionNumber: number) => {
+            cordova.getAppVersion.getVersionNumber((versionNumber: string) => {
                 if (versionNumber) {
                     cordova.getAppVersion.getVersionCode((versionCode: string) => {
                         if (versionCode) {
-                            this.mxObject.set(this.deviceIDAttribute, window.device.uuid);
+                            this.mxObject.set(this.deviceIdAttribute, window.device.uuid);
                             this.mxObject.set(this.deviceTypeAttribute, window.device.platform);
                             this.mxObject.set(this.appVersionBuildAttribute, versionNumber);
                             this.mxObject.set(this.appVersionVersionAttribute, versionCode);
-                            this.save(this.mxObject);
+                            this.commit(this.mxObject);
                         }
                     });
                 }
@@ -70,46 +95,46 @@ class MobileDevice extends WidgetBase {
 
     private validateProps(): string {
         let errorMessage = "";
-        if (this.onGetDeviceInformationOption === "callMicroflow" && !this.onGetDeviceInformationMicroflow) {
+        if (this.onDeviceReadyAction === "callMicroflow" && !this.microflow) {
             errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
-        } else if (this.onGetDeviceInformationOption === "showPage" && !this.onGetDeviceInformationPage) {
+        } else if (this.onDeviceReadyAction === "showPage" && !this.page) {
             errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
         }
 
         return errorMessage && `Error in device id widget configuration: ${errorMessage}`;
     }
 
-    private save(mxObject: mendix.lib.MxObject) {
+    private commit(mxObject: mendix.lib.MxObject) {
         window.mx.data.commit({
             callback: () => {
-                mx.ui.back();
+                if (this.onNavigateBack) {
+                    mx.ui.back();
+                }
                 this.executeMicroFlow(mxObject);
             },
-            error: (error) => {
-                window.mx.ui.error(`Error while saving device information: ${error.message}`);
-            },
+            error: (error) => window.mx.ui.error(`Error while saving device information: ${error.message}`),
             mxobj: mxObject
         });
     }
 
     private executeMicroFlow(mxObject: mendix.lib.MxObject) {
-        const context = new window.mendix.lib.MxContext();
+        const context = this.mxcontext;
         context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (!mxObject || !mxObject.getGuid()) {
             return;
         }
-        if (this.onGetDeviceInformationOption === "callMicroflow" && this.onGetDeviceInformationMicroflow) {
-            const getError = (error: Error) => ` ${this.onGetDeviceInformationMicroflow}: ${error.message}`;
-            window.mx.ui.action(this.onGetDeviceInformationMicroflow, {
+        if (this.onDeviceReadyAction === "callMicroflow" && this.microflow) {
+            const getError = (error: Error) => ` ${this.microflow}: ${error.message}`;
+            window.mx.ui.action(this.microflow, {
                 context,
                 error: error => window.mx.ui.error(`Error while executing microflow ${getError(error)}`),
                 origin: this.mxform
             });
-        } else if (this.onGetDeviceInformationMicroflow === "showPage" && this.onGetDeviceInformationPage) {
-            window.mx.ui.openForm(this.onGetDeviceInformationPage, {
+        } else if (this.microflow === "showPage" && this.page) {
+            window.mx.ui.openForm(this.page, {
                 context,
                 error: error =>
-                    window.mx.ui.error(`Error while opening page ${this.onGetDeviceInformationPage}: ${error.message}`)
+                    window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
             });
         }
     }

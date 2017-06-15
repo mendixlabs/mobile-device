@@ -1,16 +1,17 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const package = require("./package");
+const widgetName = package.widgetName;
 
 const widgetConfig = {
     entry: {
-        MobileDevice: "./src/MobileDevice/widget/MobileDevice.ts",
+        MobileDevice: `./src/${widgetName}/widget/${widgetName}.ts`,
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/MobileDevice/widget/MobileDevice.js",
-        libraryTarget: "amd"
+        filename: `src/${widgetName}/widget/${widgetName}.js`,
+        libraryTarget: "umd"
     },
     resolve: {
         extensions: [ ".ts" ],
@@ -26,7 +27,6 @@ const widgetConfig = {
     devtool: "source-map",
     externals: [ "react", "react-dom", /^mxui\/|^mendix\/|^dojo\/|^dijit\// ],
     plugins: [
-        new CleanWebpackPlugin("dist/tmp"),
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
         ], { copyUnmodified: true }),
@@ -35,10 +35,10 @@ const widgetConfig = {
 };
 
 const previewConfig = {
-    entry: "./src/MobileDevice/widget/MobileDevice.webmodeler.ts",
+    entry: `./src/${widgetName}/widget/${widgetName}.webmodeler.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/MobileDevice/widget/MobileDevice.webmodeler.js",
+        filename: `src/${widgetName}/widget/${widgetName}.webmodeler.js`,
         libraryTarget: "commonjs"
     },
     resolve: {

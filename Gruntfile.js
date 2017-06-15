@@ -17,11 +17,10 @@ module.exports = function(grunt) {
 
         watch: {
             updateWidgetFiles: {
-                files: [ "./dist/tmp/src/**/*" ],
+                files: [ "./src/**/*" ],
                 tasks: [ "webpack:develop", "file_append", "compress:dist", "copy:distDeployment", "copy:mpk" ],
                 options: {
-                    debounceDelay: 250,
-                    livereload: true
+                    debounceDelay: 250
                 }
             },
             sourceFiles: {
@@ -75,8 +74,8 @@ module.exports = function(grunt) {
         file_append: {
             addSourceURL: {
                 files: [ {
-                    append: "\n\n//# sourceURL=MobileDevice.webmodeler.js\n",
-                    input: "dist/tmp/src/MobileDevice/widget/MobileDevice.webmodeler.js"
+                    append: "\n\n//# sourceURL=" + pkg.widgetName + ".webmodeler.js\n",
+                    input: "dist/tmp/src/MobileDevice/widget/" + pkg.widgetName + ".webmodeler.js"
                 } ]
             }
         },

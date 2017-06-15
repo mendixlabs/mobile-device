@@ -4,6 +4,6 @@ import { Component, DOM } from "react";
 export class preview extends Component<{}, {}> {
 
     render() {
-        return DOM.div({});
+        return DOM.div({ className: "mobile-device-no-preview" });
     }
 }

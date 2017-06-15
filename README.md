@@ -7,8 +7,10 @@
 * Show or close page upon device information retrievable.
 
 ## Dependencies
-Mendix version 6.10 or up
-Add cordova-plugin-app-version to your phonegap app
+* Mendix version 6.10 or up
+* Add cordova-plugin-app-version to your phonegap app like this.
+
+    ` <plugin name="cordova-plugin-app-version" source="npm" spec="0.1.8" />`
 
 ## How it Works
 The widget will save device information to a configured context object. The version and build
