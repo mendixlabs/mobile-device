@@ -5,7 +5,7 @@
     "outDir": "dist/tsc/",
     "noEmitOnError": true,
     "sourceMap": true,
-    "module": "umd",
+    "module": "amd",
     "target": "es5",
     "types": [ "mendix-client" ],
     "moduleResolution": "node",

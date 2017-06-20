@@ -17,12 +17,11 @@ class MobileDevice extends WidgetBase {
     private mxObject: mendix.lib.MxObject;
     private onNavigateBack: boolean;
     // internal variables
-    private deviceReadyEvent: any;
+    private deviceReadyEvent: dojoEvent | null;
 
     postCreate() {
         this.showError(this.validateProps());
         this.setUpWidgetDom();
-        this.setUpEvents();
     }
 
     update(mxObject: mendix.lib.MxObject, callback: () => void) {
@@ -32,6 +31,7 @@ class MobileDevice extends WidgetBase {
             mxObject.set(this.deviceTypeAttribute, "Web");
             this.commit(mxObject);
         }
+        this.setUpEvents();
 
         callback();
     }
@@ -74,22 +74,22 @@ class MobileDevice extends WidgetBase {
     }
 
     private onDeviceReady() {
-        if (cordova.getAppVersion !== undefined) {
+        if (cordova.hasOwnProperty("getAppVersion")) {
             cordova.getAppVersion.getVersionNumber((versionNumber: string) => {
                 if (versionNumber) {
                     cordova.getAppVersion.getVersionCode((versionCode: string) => {
                         if (versionCode) {
                             this.mxObject.set(this.deviceIdAttribute, window.device.uuid);
                             this.mxObject.set(this.deviceTypeAttribute, window.device.platform);
-                            this.mxObject.set(this.appVersionBuildAttribute, versionNumber);
-                            this.mxObject.set(this.appVersionVersionAttribute, versionCode);
+                            this.mxObject.set(this.appVersionBuildAttribute, versionCode);
+                            this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
                             this.commit(this.mxObject);
                         }
                     });
                 }
             });
         } else {
-            window.mx.ui.error("Add cordova-plugin-app-version to your project config");
+            window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
         }
     }
 
@@ -101,7 +101,7 @@ class MobileDevice extends WidgetBase {
             errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
         }
 
-        return errorMessage && `Error in device id widget configuration: ${errorMessage}`;
+        return errorMessage && `Error in mobile device widget configuration: ${errorMessage}`;
     }
 
     private commit(mxObject: mendix.lib.MxObject) {
