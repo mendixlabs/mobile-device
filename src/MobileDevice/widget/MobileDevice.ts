@@ -28,7 +28,7 @@ class MobileDevice extends WidgetBase {
     update(mxObject: mendix.lib.MxObject, callback?: () => void) {
         this.mxObject = mxObject;
         this.setDeviceInformation();
-        this.commitWebDeviceInformation();
+        this.getWebDeviceInformation();
         this.setUpEvents();
 
         if (callback) {
@@ -72,7 +72,7 @@ class MobileDevice extends WidgetBase {
     }
 
     private onDeviceReady() {
-        this.commitAppInformation();
+        this.getAppInformation();
     }
 
     private validateProps(): string {
@@ -95,13 +95,16 @@ class MobileDevice extends WidgetBase {
         }
     }
 
-    private commitWebDeviceInformation() {
+    private getWebDeviceInformation() {
         if (!window.device) {
-            this.commit(this.mxObject);
+            if (this.onNavigateBack) {
+                mx.ui.back();
+            }
+            this.executeMicroFlow(this.mxObject);
         }
     }
 
-    private commitAppInformation() {
+    private getAppInformation() {
         if (cordova.hasOwnProperty("getAppVersion")) {
             cordova.getAppVersion.getAppName(appName => {
                 if (this.appVersionNameAttribute) {
@@ -115,26 +118,16 @@ class MobileDevice extends WidgetBase {
                         if (this.appVersionVersionAttribute) {
                             this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
                         }
-                        this.commit(this.mxObject);
+                        if (this.onNavigateBack) {
+                            mx.ui.back();
+                        }
+                        this.executeMicroFlow(this.mxObject);
                     });
                 });
             });
         } else {
             window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
         }
-    }
-
-    private commit(mxObject: mendix.lib.MxObject) {
-        window.mx.data.commit({
-            callback: () => {
-                if (this.onNavigateBack) {
-                    mx.ui.back();
-                }
-                this.executeMicroFlow(mxObject);
-            },
-            error: (error) => window.mx.ui.error(`Error while saving device information: ${error.message}`),
-            mxobj: mxObject
-        });
     }
 
     private executeMicroFlow(mxObject: mendix.lib.MxObject) {
