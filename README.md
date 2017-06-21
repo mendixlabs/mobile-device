@@ -1,5 +1,5 @@
 # Mobile Device Widget
-* Gets device information
+* Gets device information. It is recommended to use this widget for mendix hybrid application.
 
 # Features
 * Set the Device ID , device type and random device token
