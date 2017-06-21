@@ -7,33 +7,33 @@ import * as dojoOn from "dojo/on";
 type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow";
 
 class MobileDevice extends WidgetBase {
-    private deviceIdAttribute: string;
-    private deviceTypeAttribute: string;
-    private appVersionVersionAttribute: string;
-    private appVersionBuildAttribute: string;
-    private microflow: string;
-    private onDeviceReadyAction: onDeviceReadyActions;
-    private page: string;
-    private mxObject: mendix.lib.MxObject;
-    private onNavigateBack: boolean;
+    deviceIdAttribute: string;
+    deviceTypeAttribute: string;
+    appVersionVersionAttribute: string;
+    appVersionNameAttribute: string;
+    appVersionIdAttribute: string;
+    microflow: string;
+    onDeviceReadyAction: onDeviceReadyActions;
+    page: string;
+    onNavigateBack: boolean;
     // internal variables
     private deviceReadyEvent: dojoEvent | null;
+    private mxObject: mendix.lib.MxObject;
 
     postCreate() {
         this.showError(this.validateProps());
         this.setUpWidgetDom();
     }
 
-    update(mxObject: mendix.lib.MxObject, callback: () => void) {
+    update(mxObject: mendix.lib.MxObject, callback?: () => void) {
         this.mxObject = mxObject;
-        if (!window.device) {
-            mxObject.set(this.deviceIdAttribute, "");
-            mxObject.set(this.deviceTypeAttribute, "Web");
-            this.commit(mxObject);
-        }
+        this.setDeviceInformation();
+        this.commitWebDeviceInformation();
         this.setUpEvents();
 
-        callback();
+        if (callback) {
+            callback();
+        }
     }
 
     uninitialize(): boolean {
@@ -58,11 +58,9 @@ class MobileDevice extends WidgetBase {
     }
 
     private removeEvents() {
-        if (window.device) {
-            if (this.deviceReadyEvent) {
-                this.deviceReadyEvent.remove();
-                this.deviceReadyEvent = null;
-            }
+        if (window.device && this.deviceReadyEvent) {
+            this.deviceReadyEvent.remove();
+            this.deviceReadyEvent = null;
         }
     }
 
@@ -70,27 +68,11 @@ class MobileDevice extends WidgetBase {
         domConstruct.create("div", {
             class: "mobile-device-widget",
             id: "mobile-device"
-        }, document.body, "first");
+        }, this.domNode, "first");
     }
 
     private onDeviceReady() {
-        if (cordova.hasOwnProperty("getAppVersion")) {
-            cordova.getAppVersion.getVersionNumber((versionNumber: string) => {
-                if (versionNumber) {
-                    cordova.getAppVersion.getVersionCode((versionCode: string) => {
-                        if (versionCode) {
-                            this.mxObject.set(this.deviceIdAttribute, window.device.uuid);
-                            this.mxObject.set(this.deviceTypeAttribute, window.device.platform);
-                            this.mxObject.set(this.appVersionBuildAttribute, versionCode);
-                            this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
-                            this.commit(this.mxObject);
-                        }
-                    });
-                }
-            });
-        } else {
-            window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
-        }
+        this.commitAppInformation();
     }
 
     private validateProps(): string {
@@ -102,6 +84,44 @@ class MobileDevice extends WidgetBase {
         }
 
         return errorMessage && `Error in mobile device widget configuration: ${errorMessage}`;
+    }
+
+    private setDeviceInformation() {
+        if (this.deviceTypeAttribute) {
+            this.mxObject.set(this.deviceTypeAttribute, window.device ? window.device.platform : "Web");
+        }
+        if (this.deviceIdAttribute) {
+            this.mxObject.set(this.deviceIdAttribute, window.device ? window.device.uuid : "");
+        }
+    }
+
+    private commitWebDeviceInformation() {
+        if (!window.device) {
+            this.commit(this.mxObject);
+        }
+    }
+
+    private commitAppInformation() {
+        if (cordova.hasOwnProperty("getAppVersion")) {
+            cordova.getAppVersion.getAppName(appName => {
+                if (this.appVersionNameAttribute) {
+                    this.mxObject.set(this.appVersionNameAttribute, appName);
+                }
+                cordova.getAppVersion.getPackageName(packageName => {
+                    if (this.appVersionIdAttribute) {
+                        this.mxObject.set(this.appVersionIdAttribute, packageName);
+                    }
+                    cordova.getAppVersion.getVersionNumber(versionNumber => {
+                        if (this.appVersionVersionAttribute) {
+                            this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
+                        }
+                        this.commit(this.mxObject);
+                    });
+                });
+            });
+        } else {
+            window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
+        }
     }
 
     private commit(mxObject: mendix.lib.MxObject) {
