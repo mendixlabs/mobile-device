@@ -142,7 +142,7 @@ class MobileDevice extends WidgetBase {
             window.mx.ui.action(this.microflow, {
                 context,
                 error: error =>
-                            window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
+                    window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
                 origin: this.mxform
             });
         } else if (this.microflow === "showPage" && this.page) {
