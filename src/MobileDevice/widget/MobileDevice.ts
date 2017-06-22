@@ -105,28 +105,30 @@ class MobileDevice extends WidgetBase {
     }
 
     private getAppInformation() {
-        if (cordova.hasOwnProperty("getAppVersion")) {
-            cordova.getAppVersion.getAppName(appName => {
-                if (this.appVersionNameAttribute) {
-                    this.mxObject.set(this.appVersionNameAttribute, appName);
-                }
-                cordova.getAppVersion.getPackageName(packageName => {
-                    if (this.appVersionIdAttribute) {
-                        this.mxObject.set(this.appVersionIdAttribute, packageName);
+        if (this.appVersionNameAttribute || this.appVersionIdAttribute || this.appVersionVersionAttribute) {
+            if (cordova.hasOwnProperty("getAppVersion")) {
+                cordova.getAppVersion.getAppName(appName => {
+                    if (this.appVersionNameAttribute) {
+                        this.mxObject.set(this.appVersionNameAttribute, appName);
                     }
-                    cordova.getAppVersion.getVersionNumber(versionNumber => {
-                        if (this.appVersionVersionAttribute) {
-                            this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
+                    cordova.getAppVersion.getPackageName(packageName => {
+                        if (this.appVersionIdAttribute) {
+                            this.mxObject.set(this.appVersionIdAttribute, packageName);
                         }
-                        if (this.onNavigateBack) {
-                            mx.ui.back();
-                        }
-                        this.executeMicroFlow(this.mxObject);
+                        cordova.getAppVersion.getVersionNumber(versionNumber => {
+                            if (this.appVersionVersionAttribute) {
+                                this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
+                            }
+                            if (this.onNavigateBack) {
+                                mx.ui.back();
+                            }
+                            this.executeMicroFlow(this.mxObject);
+                        });
                     });
                 });
-            });
-        } else {
-            window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
+            } else {
+                window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
+            }
         }
     }
 
@@ -137,10 +139,10 @@ class MobileDevice extends WidgetBase {
             return;
         }
         if (this.onDeviceReadyAction === "callMicroflow" && this.microflow) {
-            const getError = (error: Error) => ` ${this.microflow}: ${error.message}`;
             window.mx.ui.action(this.microflow, {
                 context,
-                error: error => window.mx.ui.error(`Error while executing microflow ${getError(error)}`),
+                error: error =>
+                            window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
                 origin: this.mxform
             });
         } else if (this.microflow === "showPage" && this.page) {

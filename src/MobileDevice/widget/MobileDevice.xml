@@ -13,7 +13,7 @@
             </attributeTypes>
         </property>
         <property key="deviceIdAttribute" type="attribute" required="false">
-            <caption>Device id</caption>
+            <caption>Device ID</caption>
             <category>Data source</category>
             <description>The platform unique identification of the device manufacturer</description>
             <attributeTypes>
@@ -23,13 +23,13 @@
         <property key="appVersionNameAttribute" type="attribute" required="false">
             <caption>App name</caption>
             <category>Data source</category>
-            <description>the name of the mobile app</description>
+            <description>The name of the mobile app</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
         <property key="appVersionIdAttribute" type="attribute" required="false">
-            <caption>App id</caption>
+            <caption>App ID</caption>
             <category>Data source</category>
             <description>The unique app identifier of the mobile app e.g com.example.myawesomeapp</description>
             <attributeTypes>
@@ -39,7 +39,7 @@
         <property key="appVersionVersionAttribute" type="attribute" required="false">
             <caption>App version</caption>
             <category>Data source</category>
-            <description>Mendix version of the application</description>
+            <description>Version of the mobile app</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>

@@ -1,9 +1,9 @@
 interface Window {
-    device: {
+    device?: {
         platform: string;
         uuid: string;
     };
-    AppVersion: {
+    AppVersion?: {
         version: string;
         build: number;
     };
