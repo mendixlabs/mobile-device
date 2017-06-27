@@ -100,7 +100,10 @@ class MobileDevice extends WidgetBase {
             if (this.onNavigateBack) {
                 mx.ui.back();
             }
-            this.executeMicroFlow(this.mxObject);
+            setTimeout(() => {
+                // Wait for execution for this.update to be finished
+                this.executeMicroFlow(this.mxObject);
+            }, 0);
         }
     }
 
