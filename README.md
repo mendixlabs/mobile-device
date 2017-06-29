@@ -1,10 +1,30 @@
 # Mobile Device Widget
-* Gets device information. It is recommended to use this widget for mendix hybrid application.
+Gets device information. It is recommended to use this widget for mendix hybrid application.The widget retrieves information about your device and mobile app. It can retrieve the following data:
+- Device ID: the unique id of the device
+- Device platform: the platform on which the app runs, e.g. Android/iOS/Web.
+- App name: the user friendly name of app that is also displayed on your home screen and in the app store, e.g. MyAwesomeApp
+- App ID: the unique identifier of your mobile app, e.g. com.mycompany.awesomeapp.
+- App version: the version of your mobile app, e.g. 1.2.1.
 
 # Features
-* Set the Device ID , device type and random device token
-* Executes the microflow with the device object. This widget also closes the current page so then when a back/close action is performed on the next page the app is closed
-* Show or close page upon device information retrievable.
+* Set the Device ID , platform / device type
+* Executes the microflow after the device information is retrieved. 
+* This widget also closes the current page so that when a back/close action is performed on the next page the app is closed
+* Show page upon device information retrievable.
+
+# Use cases
+
+### Device based settings
+The Device ID is very useful for anonymous apps in which you still want to persist data per device. By using the device ID you can store data related to the device so the next time the user opens the app on that device you can load the correct data/settings.
+
+### Differentiate the UI for Android and iOS.
+Android and iOS have different design patterns and guidelines. By leveraging the platform info of this widget you can change the UI based on the platform. An example is to show a back button only on iOS because Android has a standard back button. However, you could also use it for a more differentiating UI/UX.
+
+### Multi Label Mobile Apps
+Several companies want to publish multiple apps to the app stores under a different label/brand but use a single model. With this widget you can use the app identifier or name to easily determine the current label/brand of the mobile app and adjust the content and look and feel.
+
+### Mobile App Version Check
+In some cases, it is important that users have downloaded the latest/right version of the mobile app from the app store. For example, when you updated a plugin because of security vulnerabilities or when your mobile app depends on a certain plugin that is recently added. By leveraging the app version, you can check whether the user has installed the correct version of the app and notify the user to download the latest version from the app store.
 
 ## Dependencies
 * Mendix version 6.10 or up
@@ -13,11 +33,24 @@
     ` <plugin name="cordova-plugin-app-version" source="npm" spec="0.1.8" />`
 
 ## How it Works
-The widget will save device information to a configured context object. The version and build
-information are only available when `cordova-plugin-app-version` is used.
+Once the widget has been set in the context of any object and the right parameters configured, the widget will save device information to the context object. It should be noted that the version and build
+information are only available when `cordova-plugin-app-version` is used in the project config.
 
 ## Demo project
 http://deviceidwidget.mxapps.io
+
+## Usage
+
+### Data source
+ On the `Data source` option of the `Data source` tab, select and set the respective attributes as string
+<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/datasource.png" width="900px" height="600px" />
+
+ On the `on get device information` option of the `Events` tab, select and set the `on get device information` action to specify what type of action should be performed when the information is retrieved. There are three options:
+ - `nothing` means no action is performed
+ - `Show page` implies a `page` is supposed to be shown in and that case you select and set the `Page` from the `Page` option.
+ - `Microflow` indicates the `microflow` action that should executed when the device object is retrieved and in that case you select and set the `Microflow`.
+
+<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/events.png" width="900px" height="600px" />
 
 ## Issues, suggestions and feature requests
 Please report issues at [https://github.com/mendixlabs/mobile-device/issues](https://github.com/mendixlabs/mobile-device/issues).
