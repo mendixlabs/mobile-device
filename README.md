@@ -43,14 +43,14 @@ http://deviceidwidget.mxapps.io
 
 ### Data source
  On the `Data source` option of the `Data source` tab, select and set the respective attributes as string
-<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/datasource.png" width="900px" height="600px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/datasource.png" />
 
  On the `on get device information` option of the `Events` tab, select and set the `on get device information` action to specify what type of action should be performed when the information is retrieved. There are three options:
  - `nothing` means no action is performed
  - `Show page` implies a `page` is supposed to be shown in and that case you select and set the `Page` from the `Page` option.
  - `Microflow` indicates the `microflow` action that should executed when the device object is retrieved and in that case you select and set the `Microflow`.
 
-<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/events.png" width="900px" height="600px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/mobile-device/v1.0.1/assets/events.png" />
 
 ## Issues, suggestions and feature requests
 Please report issues at [https://github.com/mendixlabs/mobile-device/issues](https://github.com/mendixlabs/mobile-device/issues).
@@ -71,7 +71,7 @@ To set up the development environment, run:
 
 Create a folder named dist in the project root.
 
-Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/mobile-device/releases/download/v1.0.0/TestMobileDeviceWidget.mpk](https://github.com/mendixlabs/mobile-device/releases/download/v1.0.0/TestMobileDeviceWidget.mpk)
+Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/mobile-device/releases/download/v1.0.1/TestMobileDeviceWidget.mpk](https://github.com/mendixlabs/mobile-device/releases/download/v1.0.1/TestMobileDeviceWidget.mpk)
 
     dist/MxTestProject
 
