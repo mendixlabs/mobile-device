@@ -22,7 +22,7 @@ class MobileDevice extends WidgetBase {
 
     postCreate() {
         this.showError(this.validateProps());
-        this.setUpWidgetDom();
+        this.domNode.className = "widget-mobile-device";
     }
 
     update(mxObject: mendix.lib.MxObject, callback?: () => void) {
@@ -64,13 +64,6 @@ class MobileDevice extends WidgetBase {
         }
     }
 
-    private setUpWidgetDom() {
-        domConstruct.create("div", {
-            class: "mobile-device-widget",
-            id: "mobile-device"
-        }, this.domNode, "first");
-    }
-
     private onDeviceReady() {
         this.getAppInformation();
     }
@@ -97,10 +90,10 @@ class MobileDevice extends WidgetBase {
 
     private getWebDeviceInformation() {
         if (!window.device) {
-            if (this.onNavigateBack) {
-                mx.ui.back();
-            }
-            this.executeMicroFlow(this.mxObject);
+            setTimeout(() => {
+                // Wait for execution for this.update to be finished
+                this.executeDeviceAction(this.mxObject);
+            }, 0);
         }
     }
 
@@ -119,10 +112,7 @@ class MobileDevice extends WidgetBase {
                             if (this.appVersionVersionAttribute) {
                                 this.mxObject.set(this.appVersionVersionAttribute, versionNumber);
                             }
-                            if (this.onNavigateBack) {
-                                mx.ui.back();
-                            }
-                            this.executeMicroFlow(this.mxObject);
+                            this.executeDeviceAction(this.mxObject);
                         });
                     });
                 });
@@ -132,7 +122,7 @@ class MobileDevice extends WidgetBase {
         }
     }
 
-    private executeMicroFlow(mxObject: mendix.lib.MxObject) {
+    private executeDeviceAction(mxObject: mendix.lib.MxObject) {
         const context = this.mxcontext;
         context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (!mxObject || !mxObject.getGuid()) {
@@ -151,6 +141,9 @@ class MobileDevice extends WidgetBase {
                 error: error =>
                     window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
             });
+        }
+        if (this.onNavigateBack) {
+            window.mx.ui.back();
         }
     }
 }
