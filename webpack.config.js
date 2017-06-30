@@ -11,7 +11,7 @@ const widgetConfig = {
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: `src/${widgetName}/widget/${widgetName}.js`,
-        libraryTarget: "umd"
+        libraryTarget: "amd"
     },
     resolve: {
         extensions: [ ".ts" ],
