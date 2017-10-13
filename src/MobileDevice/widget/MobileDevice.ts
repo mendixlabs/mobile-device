@@ -30,6 +30,10 @@ class MobileDevice extends WidgetBase {
         this.setDeviceInformation();
         this.getWebDeviceInformation();
         this.setUpEvents();
+        if (this.onDeviceReadyAction) {
+            this.executeDeviceAction(this.mxObject);    
+        }
+        
 
         if (callback) {
             callback();
