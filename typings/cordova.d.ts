@@ -7,4 +7,4 @@ interface Cordova {
         getPackageName: callbackFunction;
     };
 }
-declare const cordova: Cordova; 
+declare const cordova: Cordova;

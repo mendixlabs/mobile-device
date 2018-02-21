@@ -17,7 +17,7 @@ class MobileDevice extends WidgetBase {
     page: string;
     onNavigateBack: boolean;
     // internal variables
-    private deviceReadyEvent: dojoEvent | null;
+    private deviceReadyEvent: DojoEvent | null;
     private mxObject: mendix.lib.MxObject;
 
     postCreate() {

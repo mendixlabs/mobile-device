@@ -30,8 +30,10 @@
     "no-inferrable-types": [
       true
     ],
+    "no-implicit-dependencies": false,
     "no-internal-module": true,
     "no-shadowed-variable": true,
+    "no-submodule-imports": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
