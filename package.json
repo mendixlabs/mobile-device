@@ -1,7 +1,7 @@
 {
   "name": "mobile-device",
   "widgetName": "MobileDevice",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gets device information",
   "copyright": "Mendix BV",
   "scripts": {
