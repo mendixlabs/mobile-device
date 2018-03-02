@@ -1,3 +1,3 @@
-interface dojoEvent extends Object {
-    remove: () => void
+interface DojoEvent extends Object {
+    remove: () => void;
 }

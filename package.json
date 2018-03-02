@@ -1,7 +1,7 @@
 {
   "name": "mobile-device",
   "widgetName": "MobileDevice",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gets device information",
   "copyright": "Mendix BV",
   "scripts": {
@@ -48,7 +48,7 @@
     "ts-loader": "^2.0.1",
     "tslint": "^5.4.2",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.2.1",
+    "typescript": "^2.4.1",
     "url-loader": "^0.5.8",
     "webpack": "^2.3.1",
     "webpack-dev-server": "^2.2.0",
