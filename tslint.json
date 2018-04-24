@@ -136,7 +136,17 @@
     ],
     "curly": false,
     "arrow-parens": false,
-    "linebreak-style": [ true, "LF" ]
+    "no-object-literal-type-assertion": false,
+    "linebreak-style": [
+      true,
+      "LF"
+    ],
+    "object-literal-sort-keys": false,
+    "array-type": false,
+    "max-line-length": false,
+    "no-submodule-imports": false,
+    "no-implicit-dependencies": false,
+    "no-namespace": false
   },
   "jsRules": {
     "trailing-comma": [
@@ -147,6 +157,9 @@
       true,
       "always"
     ],
-    "linebreak-style": [ true, "LF" ]
+    "linebreak-style": [
+      true,
+      "LF"
+    ]
   }
 }

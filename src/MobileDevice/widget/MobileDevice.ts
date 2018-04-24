@@ -4,7 +4,12 @@ import * as WidgetBase from "mxui/widget/_WidgetBase";
 import * as dojoLang from "dojo/_base/lang";
 import * as dojoOn from "dojo/on";
 
-type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow";
+type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
+
+interface Nanoflow {
+    nanoflow: object[];
+    paramsSpec: { Progress: string };
+}
 
 class MobileDevice extends WidgetBase {
     deviceIdAttribute: string;
@@ -13,6 +18,7 @@ class MobileDevice extends WidgetBase {
     appVersionNameAttribute: string;
     appVersionIdAttribute: string;
     microflow: string;
+    nanoflow: Nanoflow;
     onDeviceReadyAction: onDeviceReadyActions;
     page: string;
     onNavigateBack: boolean;
@@ -72,6 +78,8 @@ class MobileDevice extends WidgetBase {
         let errorMessage = "";
         if (this.onDeviceReadyAction === "callMicroflow" && !this.microflow) {
             errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
+        } else if (this.onDeviceReadyAction === "callNanoflow" && !this.nanoflow.nanoflow) {
+            errorMessage = "on click nanoflow is required in the 'Events' tab, 'Nanoflow' property";
         } else if (this.onDeviceReadyAction === "showPage" && !this.page) {
             errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
         }
@@ -124,6 +132,7 @@ class MobileDevice extends WidgetBase {
 
     private executeDeviceAction(mxObject: mendix.lib.MxObject) {
         const context = this.mxcontext;
+
         context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (!mxObject || !mxObject.getGuid()) {
             return;
@@ -133,6 +142,13 @@ class MobileDevice extends WidgetBase {
                 context,
                 error: error =>
                     window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
+                origin: this.mxform
+            });
+        } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow) {
+            window.mx.data.callNanoflow({
+                context,
+                error: error => mx.ui.error(`Error executing nanoflow ${this.nanoflow} : ${error.message}`),
+                nanoflow: this.nanoflow,
                 origin: this.mxform
             });
         } else if (this.onDeviceReadyAction === "showPage" && this.page) {

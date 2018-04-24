@@ -2,7 +2,7 @@ type callbackFunction = (something: (versionNumber: string) => void) => string;
 
 interface Cordova {
     getAppVersion: {
-        getVersionNumber: callbackFunction ;
+        getVersionNumber: callbackFunction;
         getAppName: callbackFunction;
         getPackageName: callbackFunction;
     };
