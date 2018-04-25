@@ -14,6 +14,7 @@ interface Nanoflow {
 class MobileDevice extends WidgetBase {
     deviceIdAttribute: string;
     deviceTypeAttribute: string;
+    deviceVersionAttribute: string;
     appVersionVersionAttribute: string;
     appVersionNameAttribute: string;
     appVersionIdAttribute: string;
@@ -77,11 +78,11 @@ class MobileDevice extends WidgetBase {
     private validateProps(): string {
         let errorMessage = "";
         if (this.onDeviceReadyAction === "callMicroflow" && !this.microflow) {
-            errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
+            errorMessage = "deviceready microflow is required in the 'Events' tab, 'Microflow' property";
         } else if (this.onDeviceReadyAction === "callNanoflow" && !this.nanoflow.nanoflow) {
-            errorMessage = "on click nanoflow is required in the 'Events' tab, 'Nanoflow' property";
+            errorMessage = "deviceready nanoflow is required in the 'Events' tab, 'Nanoflow' property";
         } else if (this.onDeviceReadyAction === "showPage" && !this.page) {
-            errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
+            errorMessage = "deviceready page is required in the 'Events' tab, 'Page' property";
         }
 
         return errorMessage && `Error in mobile device widget configuration: ${errorMessage}`;
@@ -93,6 +94,9 @@ class MobileDevice extends WidgetBase {
         }
         if (this.deviceIdAttribute) {
             this.mxObject.set(this.deviceIdAttribute, window.device ? window.device.uuid : "");
+        }
+        if (this.deviceVersionAttribute) {
+            this.mxObject.set(this.deviceVersionAttribute, window.device ? window.device.version : "");
         }
     }
 
@@ -144,7 +148,7 @@ class MobileDevice extends WidgetBase {
                     window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
                 origin: this.mxform
             });
-        } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow) {
+        } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow.nanoflow) {
             window.mx.data.callNanoflow({
                 context,
                 error: error => mx.ui.error(`Error executing nanoflow ${this.nanoflow} : ${error.message}`),

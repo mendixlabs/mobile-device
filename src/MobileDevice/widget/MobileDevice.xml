@@ -44,10 +44,18 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
+        <property key="deviceVersionAttribute" type="attribute" required="false">
+            <caption>Device vesrion</caption>
+            <category>Data source</category>
+            <description>Operating system version of the device</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
         <property key="onDeviceReadyAction" type="enumeration" defaultValue="doNothing">
             <caption>On get device information</caption>
             <category>Events</category>
-            <description/>
+            <description>Action to execute when the device is ready</description>
             <enumerationValues>
                 <enumerationValue key="doNothing">Do nothing</enumerationValue>
                 <enumerationValue key="showPage">Show a page</enumerationValue>
