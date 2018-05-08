@@ -151,7 +151,7 @@ class MobileDevice extends WidgetBase {
         } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow.nanoflow) {
             window.mx.data.callNanoflow({
                 context,
-                error: error => mx.ui.error(`Error executing nanoflow ${this.nanoflow} : ${error.message}`),
+                error: error => mx.ui.error(`Error while executing nanoflow ${error.message}`),
                 nanoflow: this.nanoflow,
                 origin: this.mxform
             });
