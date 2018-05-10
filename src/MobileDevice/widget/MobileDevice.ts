@@ -23,6 +23,7 @@ class MobileDevice extends WidgetBase {
     onDeviceReadyAction: onDeviceReadyActions;
     page: string;
     onNavigateBack: boolean;
+    openPageAs: "content"| "popup" | "modal";
     // internal variables
     private deviceReadyEvent: DojoEvent | null;
     private mxObject: mendix.lib.MxObject;
@@ -158,8 +159,8 @@ class MobileDevice extends WidgetBase {
         } else if (this.onDeviceReadyAction === "showPage" && this.page) {
             window.mx.ui.openForm(this.page, {
                 context,
-                error: error =>
-                    window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
+                error: error => window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`),
+                location: this.openPageAs
             });
         }
         if (this.onNavigateBack) {
