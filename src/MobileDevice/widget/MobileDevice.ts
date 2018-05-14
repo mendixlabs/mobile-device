@@ -145,22 +145,22 @@ class MobileDevice extends WidgetBase {
         if (this.onDeviceReadyAction === "callMicroflow" && this.microflow) {
             window.mx.ui.action(this.microflow, {
                 context,
+                origin: this.mxform,
                 error: error =>
-                    window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
-                origin: this.mxform
+                    window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`)
             });
         } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow.nanoflow) {
             window.mx.data.callNanoflow({
-                context,
-                error: error => mx.ui.error(`Error while executing nanoflow ${error.message}`),
                 nanoflow: this.nanoflow,
-                origin: this.mxform
+                context,
+                origin: this.mxform,
+                error: error => mx.ui.error(`Error while executing nanoflow ${error.message}`)
             });
         } else if (this.onDeviceReadyAction === "showPage" && this.page) {
             window.mx.ui.openForm(this.page, {
+                location: this.openPageAs,
                 context,
-                error: error => window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`),
-                location: this.openPageAs
+                error: error => window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
             });
         }
         if (this.onNavigateBack) {
