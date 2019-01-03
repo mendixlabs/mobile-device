@@ -4,18 +4,26 @@ import * as WidgetBase from "mxui/widget/_WidgetBase";
 import * as dojoLang from "dojo/_base/lang";
 import * as dojoOn from "dojo/on";
 
-type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow";
+type onDeviceReadyActions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
+
+interface Nanoflow {
+    nanoflow: object[];
+    paramsSpec: { Progress: string };
+}
 
 class MobileDevice extends WidgetBase {
     deviceIdAttribute: string;
     deviceTypeAttribute: string;
+    deviceVersionAttribute: string;
     appVersionVersionAttribute: string;
     appVersionNameAttribute: string;
     appVersionIdAttribute: string;
     microflow: string;
+    nanoflow: Nanoflow;
     onDeviceReadyAction: onDeviceReadyActions;
     page: string;
     onNavigateBack: boolean;
+    openPageAs: "content"| "popup" | "modal";
     // internal variables
     private deviceReadyEvent: DojoEvent | null;
     private mxObject: mendix.lib.MxObject;
@@ -71,9 +79,11 @@ class MobileDevice extends WidgetBase {
     private validateProps(): string {
         let errorMessage = "";
         if (this.onDeviceReadyAction === "callMicroflow" && !this.microflow) {
-            errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
+            errorMessage = "deviceready microflow is required in the 'Events' tab, 'Microflow' property";
+        } else if (this.onDeviceReadyAction === "callNanoflow" && !this.nanoflow.nanoflow) {
+            errorMessage = "deviceready nanoflow is required in the 'Events' tab, 'Nanoflow' property";
         } else if (this.onDeviceReadyAction === "showPage" && !this.page) {
-            errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
+            errorMessage = "deviceready page is required in the 'Events' tab, 'Page' property";
         }
 
         return errorMessage && `Error in mobile device widget configuration: ${errorMessage}`;
@@ -85,6 +95,9 @@ class MobileDevice extends WidgetBase {
         }
         if (this.deviceIdAttribute) {
             this.mxObject.set(this.deviceIdAttribute, window.device ? window.device.uuid : "");
+        }
+        if (this.deviceVersionAttribute) {
+            this.mxObject.set(this.deviceVersionAttribute, window.device ? window.device.version : "");
         }
     }
 
@@ -124,6 +137,7 @@ class MobileDevice extends WidgetBase {
 
     private executeDeviceAction(mxObject: mendix.lib.MxObject) {
         const context = this.mxcontext;
+
         context.setContext(mxObject.getEntity(), mxObject.getGuid());
         if (!mxObject || !mxObject.getGuid()) {
             return;
@@ -131,15 +145,22 @@ class MobileDevice extends WidgetBase {
         if (this.onDeviceReadyAction === "callMicroflow" && this.microflow) {
             window.mx.ui.action(this.microflow, {
                 context,
+                origin: this.mxform,
                 error: error =>
-                    window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`),
-                origin: this.mxform
+                    window.mx.ui.error(`Error while executing microflow ${this.microflow}: ${error.message}`)
+            });
+        } else if (this.onDeviceReadyAction === "callNanoflow" && this.nanoflow.nanoflow) {
+            window.mx.data.callNanoflow({
+                nanoflow: this.nanoflow,
+                context,
+                origin: this.mxform,
+                error: error => mx.ui.error(`Error while executing nanoflow ${error.message}`)
             });
         } else if (this.onDeviceReadyAction === "showPage" && this.page) {
             window.mx.ui.openForm(this.page, {
+                location: this.openPageAs,
                 context,
-                error: error =>
-                    window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
+                error: error => window.mx.ui.error(`Error while opening page ${this.page}: ${error.message}`)
             });
         }
         if (this.onNavigateBack) {

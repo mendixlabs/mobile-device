@@ -2,7 +2,7 @@
 <widget id="MobileDevice.widget.MobileDevice" offlineCapable="true" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
     <name>Mobile Device</name>
     <description>Get device information</description>
-    <icon>iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAAHqsLF6AAAAh1BMVEUAAAD///+SkpJVxv+Ojo6MjIyIiIhKtfpLtPuIiIiKiopKs/lJsPqIiIiJiYlIsPlKsfmJiYmJiYlJsPeIiIhJsfeIiIiJiYmIiIiJiYlJsPiIiIhIsPiIiIiJiYlIsPdStPdXtveIiIin2fuo2fur2/u64fvH5/zY7vzn9P3v+P72+/7///9uynIdAAAAH3RSTlMAAgcJCSgtMD1JTFpednd4eaCk4OHk5OX3+Pn5+vv8wta+cAAAAfpJREFUWMPdVuuagiAQpay8pHm30q3ZZa+V7/98i5goChJdvvbb80Nx5nCcgWEUoRZ4OABgAzi7GgsBP2CYDaUA6oHbDBAYWK6zqx7wvI3sjG6optt5DcImfAITrwMlMHA/uxGDGiGNImHP0ZreHNwPdLCUnMHnDRb8QN41ABzJcnOGkjekfQMKIBbsoEZgizOhQLcB81j1/Xs85ekKAREBqRTIxar2H1IpARoEYoJf+UrKGFGghFgWQw7wSvxLaZDKLG5aqAzb4wrI4+ZvJugJmCdtBLtw6F8psiR5OZ3ms8bR+EpO8f6KkrtLTV5AcH1zjJDSgrSkhBeA06lmCAkBK3sJoXIdv6qrKSe80bL35YT6XLhiQswIkhiMhpDK0lwCPVm5fKGMmB5t9Kijh25uYvetKBtnfULRe8OiT5hsOL+H/jMm3hZLsfWUrW9R4FEUC4VARki2zGkTZ3bBl/Var7jmlEX4CIGbU7iXgBHEdSuMA+MKgeVLNffj9E418qWmgFG3ciZAup2hJRDDALGOgHue9F2WJVNwNQR8Nqsj4GsImCIBU2cNgqFAoLeNVl5POxzqe25pF5KVtjuQWleWsun6vms+7Sw8UeC5HWlPKFOZc0qce4VARDhrZyZyzZw1cUaqL8tqPIHVJf/QYbITzd0l4fxPfo1/AeismFoWUK6hAAAAAElFTkSuQmCC</icon>
+    <icon>iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAh1BMVEUAAACAgIBtbW1VVVVVxv9ZWVlVVVVKtfpLtPtXV1dXV1dKs/lJsPpWVlZWVlZIsPlKsflWVlZWVlZJsPdVVVVJsfdVVVVWVlZWVlZVVVVJsPhVVVVIsPhVVVVVVVVIsPdStPdVVVVXtven2fuo2fur2/u64fvH5/zY7vzn9P3v+P72+/7///8IvvFyAAAAH3RSTlMAAgcJCSgtMD1JTFpednd4eaCk4OHk5OX3+Pn5+vv8wta+cAAAAStJREFUeAHt1+uOgjAQBWBQtFWKVCtedHVk7wrv/3w7KRvYRHDSaTYxgfP30C8YSzMNhrRkslyf8pac1stJQCdM9nln9klIAov8YRbU+unxMXCcEsAKH9rOx23VeL7FckUAG3xm1lXOsNwQwBmfGXWVIyzPBJBjiJYAiPQFINqeAUKlqRJcINIGbIyOOIDMoE4m3YH4BTDvxZsVDrErIO16KL4LqATpBkT2/es3wGSRE6DhLtoJMPeAcQEEVPm43T5rQTgACqp8lWVZA8oBSOE3r3+AlAMAE1ANwPsJog0QrL+xAQxvIzWAZm1lBHhbOZAHsLleWR8TJq6Ey4X5OfsfKP5Hms+hSrQD8Owz0jAj+Y+6/sO2/7jvfeHwvvIEYbLrXr5Lwv+49g35Acv3lUcr1EYdAAAAAElFTkSuQmCC</icon>
     <properties>
         <property key="deviceTypeAttribute" type="attribute" required="false">
             <caption>Platform</caption>
@@ -44,14 +44,23 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
+        <property key="deviceVersionAttribute" type="attribute" required="false">
+            <caption>Device vesrion</caption>
+            <category>Data source</category>
+            <description>Operating system version of the device</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
         <property key="onDeviceReadyAction" type="enumeration" defaultValue="doNothing">
             <caption>On get device information</caption>
             <category>Events</category>
-            <description/>
+            <description>Action to execute when the device is ready</description>
             <enumerationValues>
                 <enumerationValue key="doNothing">Do nothing</enumerationValue>
                 <enumerationValue key="showPage">Show a page</enumerationValue>
                 <enumerationValue key="callMicroflow">Call a microflow</enumerationValue>
+                <enumerationValue key="callNanoflow">Call a nanoflow</enumerationValue>
             </enumerationValues>
         </property>
         <property key="microflow" type="microflow" required="false">
@@ -60,10 +69,26 @@
             <description>Microflow to execute when the device information is retrieved</description>
             <returnType type="Void" />
         </property>
+        <property key="nanoflow" type="nanoflow" required="false">
+            <caption>Nanoflow</caption>
+            <category>Events</category>
+            <description>Nanoflow to execute when the device information is retrieved</description>
+            <returnType type="Void" />
+        </property>
         <property key="page" type="form" required="false">
             <caption>Page</caption>
             <category>Events</category>
             <description>The page to open when device information is retrieved</description>
+        </property>
+        <property key="openPageAs" type="enumeration" defaultValue="content">
+            <caption>Open page as</caption>
+            <category>Events</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="content">Full page</enumerationValue>
+                <enumerationValue key="popup">Popup</enumerationValue>
+                <enumerationValue key="modal">Blocking popup</enumerationValue>
+            </enumerationValues>
         </property>
         <property key="onNavigateBack" type="boolean" defaultValue="false">
             <caption>Close page</caption>
