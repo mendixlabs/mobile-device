@@ -35,9 +35,13 @@ class MobileDevice extends WidgetBase {
 
     update(mxObject: mendix.lib.MxObject, callback?: () => void) {
         this.mxObject = mxObject;
-        this.setDeviceInformation();
-        this.getWebDeviceInformation();
-        this.setUpEvents();
+        if (mxObject) {
+            this.setDeviceInformation();
+            this.getWebDeviceInformation();
+            this.setUpEvents();
+        } else {
+            this.showError("Empty context provided");
+        }
 
         if (callback) {
             callback();
