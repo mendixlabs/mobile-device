@@ -132,6 +132,8 @@ class MobileDevice extends WidgetBase {
             } else {
                 window.mx.ui.error("Mobile device widget: add cordova-plugin-app-version to your project config");
             }
+        } else {
+            this.executeDeviceAction(this.mxObject);
         }
     }
 
@@ -154,7 +156,7 @@ class MobileDevice extends WidgetBase {
                 nanoflow: this.nanoflow,
                 context,
                 origin: this.mxform,
-                error: error => mx.ui.error(`Error while executing nanoflow ${error.message}`)
+                error: error => mx.ui.error(`Error while executing nanoflow: ${error.message}`)
             });
         } else if (this.onDeviceReadyAction === "showPage" && this.page) {
             window.mx.ui.openForm(this.page, {
