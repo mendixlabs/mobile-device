@@ -12,6 +12,14 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
+        <property key="deviceVersionAttribute" type="attribute" required="false">
+            <caption>Platform version</caption>
+            <category>Data source</category>
+            <description>The version of the operating system</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
         <property key="deviceIdAttribute" type="attribute" required="false">
             <caption>Device ID</caption>
             <category>Data source</category>
@@ -40,14 +48,6 @@
             <caption>App version</caption>
             <category>Data source</category>
             <description>Version of the mobile app</description>
-            <attributeTypes>
-                <attributeType name="String"/>
-            </attributeTypes>
-        </property>
-        <property key="deviceVersionAttribute" type="attribute" required="false">
-            <caption>Device vesrion</caption>
-            <category>Data source</category>
-            <description>Operating system version of the device</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>

@@ -5,6 +5,7 @@
   "description": "Gets device information",
   "copyright": "Mendix BV",
   "scripts": {
+    "build": "grunt",
     "pretest": "tsc",
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'"
   },
@@ -14,11 +15,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mendixlabs/device-id-widget"
+    "url": "https://github.com/mendixlabs/mobile-device"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/mendixlabs/device-id-widget/issues"
+    "url": "https://github.com/mendixlabs/mobile-device/issues"
   },
   "devDependencies": {
     "@types/big.js": "0.0.31",
