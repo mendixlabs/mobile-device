@@ -24,6 +24,7 @@ const widgetConfig = {
             { test: /\.ts$/, use: "ts-loader" }
         ]
     },
+    mode: "development",
     devtool: "source-map",
     externals: [ "react", "react-dom", /^mxui\/|^mendix\/|^dojo\/|^dijit\// ],
     plugins: [
@@ -49,6 +50,7 @@ const previewConfig = {
             { test: /\.ts$/, use: "ts-loader" },
         ]
     },
+    mode: "development",
     devtool: "inline-source-map",
     externals: [ "react", "react-dom" ],
     plugins: [
