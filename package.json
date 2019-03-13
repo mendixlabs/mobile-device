@@ -9,7 +9,7 @@
     "typeCheck": "tsc --noEmit",
     "test:unit": "echo \"No tests specified\"",
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'",
-    "build": "grunt build"
+    "build": "grunt release"
   },
   "pre-commit": [
     "typeCheck",
